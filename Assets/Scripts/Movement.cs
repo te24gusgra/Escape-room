@@ -5,10 +5,9 @@ public class Movement : MonoBehaviour
     public float mouseSensitivity = 2f;
     private float verticalRotation = 0f;
     private Transform cameraTransform;
-    private bool cursorLocked = true;
 
     private Rigidbody rb;
-    public float moveSpeed = 5f;
+    public float moveSpeed = 8f;
     private float moveHorizontal;
     private float moveForward;
 
@@ -31,20 +30,6 @@ public class Movement : MonoBehaviour
         moveForward = Input.GetAxisRaw("Vertical");
 
         RotateCamera();
-
-        if (Input.GetKeyDown("N") && cursorLocked == true)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            cursorLocked = false;
-        }
-
-        if (Input.GetKeyDown("N") && cursorLocked == false)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            cursorLocked = true;
-        }
     }
 
     private void FixedUpdate()
@@ -59,14 +44,14 @@ public class Movement : MonoBehaviour
 
         Vector3 velocity = rb.linearVelocity;
         velocity.x = targetVelocity.x;
-        velocity.y = targetVelocity.y;
+        velocity.z = targetVelocity.z;
         rb.linearVelocity = velocity;
     }
 
     void RotateCamera()
     {
         float horizontalRotation = Input.GetAxis("Mouse X") * mouseSensitivity;
-        transform.Rotate(0,horizontalRotation,0);
+        transform.Rotate(0, horizontalRotation, 0);
 
         verticalRotation -= Input.GetAxis("Mouse Y") * mouseSensitivity;
         verticalRotation = Mathf.Clamp(verticalRotation, -90f, 90f);
