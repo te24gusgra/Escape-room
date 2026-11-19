@@ -2,29 +2,43 @@ using UnityEngine;
 using TMPro;
 using System;
 using UnityEngine.Scripting;
+using UnityEditor.Experimental.GraphView;
+using System.Threading;
 
 public class TimeManagement : MonoBehaviour
 {
-    TimeSpan timeSpan = TimeSpan.FromSeconds(90);
-    private float timeLimit = 90f;
-    private double timeLeft;
 
-    [SerializeField] private TMP_Text timeLimitCounter;
+    [SerializeField] TextMeshProUGUI timerText;
+    [SerializeField] float remainingTime;
+    [SerializeField] WinManagement winManagement;
+    [SerializeField] GameObject door;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
-        timeLimitCounter.text = $"{timeLimit}";
+        winManagement = door.GetComponent<WinManagement>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        timeLeft = timeLimit -= Time.deltaTime;
+        if (remainingTime - Time.deltaTime >= 0)
+        {
+            if (!winManagement.hasWon)
+            {
+                remainingTime -= Time.deltaTime;
+                int minutes = Mathf.FloorToInt(remainingTime / 60);
+                int seconds = Mathf.FloorToInt(remainingTime % 60);
+                timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+            }
+        }
+        else if (remainingTime - Time.deltaTime <= 0)
+        {
+            Lose();
+        }
+    }
 
-        
-        timeLimitCounter.text = $"{timeLeft}";
-    
-
+    void Lose()
+    {
+        timerText.text = "You Lose";
     }
 }
